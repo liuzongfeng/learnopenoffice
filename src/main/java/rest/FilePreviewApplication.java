@@ -2,22 +2,15 @@ package rest;
 
 import java.util.Properties;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.MultipartConfigElement;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.session.web.http.HeaderHttpSessionStrategy;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import rest.service.FileDubboCustomerService;
@@ -26,27 +19,34 @@ import rest.service.FileDubboCustomerService;
 @EnableScheduling
 @ComponentScan(value = "rest.*")
 @RestController
-public class FilePreviewApplication extends WebSecurityConfigurerAdapter{
+public class FilePreviewApplication {
 	
-	@Override
+	/*@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().and().authorizeRequests().anyRequest().authenticated();
 	}
 	@Bean
 	HeaderHttpSessionStrategy sessionStrategy() {
 		return new HeaderHttpSessionStrategy();
-	}
+	}*/
 	
 	@Autowired
 	private FileDubboCustomerService fileDubboCustomerService;
 	
+	@Bean
+    public MultipartConfigElement multipartConfigElement() {
+        MultipartConfigFactory factory = new MultipartConfigFactory();
+        factory.setMaxFileSize(1024L * 1024L * 100);
+        return factory.createMultipartConfig();
+    }
+
 	public static void main(String[] args) {
         Properties properties = System.getProperties();
         System.out.println(properties.get("user.dir"));
         SpringApplication.run(FilePreviewApplication.class, args);
 	}
 	
-	@RequestMapping(value = "/getsession")
+	/*@RequestMapping(value = "/getsession")
 	@ResponseBody
 	@CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = { "x-auth-token", "x-requested-with" })
 	public String home(HttpSession session) {
@@ -65,5 +65,5 @@ public class FilePreviewApplication extends WebSecurityConfigurerAdapter{
 		}else{
 			return comNum;
 		}
-	}
+	}*/
 }
